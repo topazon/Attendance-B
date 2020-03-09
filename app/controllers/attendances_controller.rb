@@ -30,11 +30,11 @@ class AttendancesController < ApplicationController
   end
   
   def update_one_month
-    ActiveRecord::Base.transaction do # トランザクションを開始します。
+    ActiveRecord::Base.transaction do # トランザクションを開始しますmodelのバリデーションに引っ掛かるとrescueに飛びます。
       attendances_params.each do |id, item|
         attendance = Attendance.find(id)
-        # 編集時に出勤時間のみの場合も更新しません。、
-        # 時間のデータを退勤時間と入れ替え、出勤時間を消すことでエラー分岐を起動させます。
+        # 編集時に出勤時間のみの場合も更新しないようにします。
+        # 時間のデータを退勤時間に代入し、出勤時間を消すことでエラー分岐を起動させます。
         if item[:started_at].present? && item[:finished_at].blank?
           item[:finished_at] = item[:started_at]
           item[:started_at] = nil
