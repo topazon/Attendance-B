@@ -35,10 +35,10 @@ class AttendancesController < ApplicationController
         attendance = Attendance.find(id)
         # 編集時に出勤時間のみの場合も更新しないようにします。
         # 時間のデータを退勤時間に代入し、出勤時間を消すことでエラー分岐を起動させます。
-        if item[:started_at].present? && item[:finished_at].blank?
-          item[:finished_at] = item[:started_at]
-          item[:started_at] = nil
-        end
+          if item[:started_at].present? && item[:finished_at].blank? && Date.current > attendance.worked_on
+            item[:finished_at] = item[:started_at]
+            item[:started_at] = nil
+          end
         attendance.update_attributes!(item)
       end
     end
